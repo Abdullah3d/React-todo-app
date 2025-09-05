@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Todo.css'
 
 export const Todo = () => {
@@ -22,6 +22,29 @@ export const Todo = () => {
         updatedTodos[index].completed = !updatedTodos[index].completed;
         setTodos(updatedTodos);
     }
+
+    const handleDeleteTodo = (index) => {
+        const updatedTodos = todos.filter((_, i) => i !== index);
+        setTodos(updatedTodos);
+    }
+
+    const clearAll = () => {
+        setTodos([]);
+    }
+
+    // localstorage implementation
+    // const storageTodos = JSON.parse(localStorage.getItem())
+
+    useEffect(() => {
+        const storedTodos = JSON.parse(localStorage.getItem('todos')) || [];
+        setTodos(storedTodos);
+    }, []);
+
+    useEffect(() => {
+        setTimeout(() => {
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }, 100);
+    }, [todos]);
 
     return (
         <>
@@ -47,7 +70,7 @@ export const Todo = () => {
                                             </span>
                                         </div>
                                         <div className="delete-btn">
-                                            <button>Delete</button>
+                                            <button onClick={() => handleDeleteTodo(index)}>Delete</button>
                                         </div>
                                     </li>
                                 ))}
@@ -57,7 +80,7 @@ export const Todo = () => {
                 </div>
 
                 <div className="clear-btn">
-                    <button className='clear-all-btn'>CLEAR ALL</button>
+                    <button className='clear-all-btn' onClick={() => { clearAll() }}>CLEAR ALL</button>
                 </div>
             </div >
         </>
